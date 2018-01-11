@@ -1,0 +1,5 @@
+config/configs/production.json
+config/configs/test.json
+npm-debug.log
+node_modules
+.idea

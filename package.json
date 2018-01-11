@@ -1,0 +1,27 @@
+{
+  "name": "mvideo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "nodemon index.js",
+    "docker-start": "docker-compose build --no-cache && docker-compose up --force-recreate -d",
+    "docker-stop": "docker-compose down -v",
+    "docker-build": "docker build --no-cache -t boronin/mvideo-bot -f ./Dockerfile .",
+    "docker-push": "docker push boronin/mvideo-bot:latest",
+    "build-dev": "docker build --no-cache -t mvideo-bot-dev -f ./dev.dockerfile .",
+    "update": "docker-machine ssh main ./restartMvideo.sh",
+    "build-and-update": "npm run docker-build && npm run docker-push && npm run update"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "got": "^8.0.0",
+    "mongodb": "^2.2.33",
+    "nconf": "^0.9.1",
+    "node-telegram-bot-api": "^0.29.0",
+    "puppeteer": "^0.13.0"
+  }
+}

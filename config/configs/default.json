@@ -1,0 +1,36 @@
+{
+  "bot": {
+    "token": "123",
+    "handlers": [
+      {
+        "name": "start",
+        "substr": "/start"
+      },
+      {
+        "name": "allGoodsCount",
+        "substr": "/count"
+      },
+      {
+        "name": "addGood",
+        "substr": "/add"
+      },
+      {
+        "name": "removeGood",
+        "substr": "/remove"
+      },
+      {
+        "name": "getAllGoodLinks",
+        "substr": "/get"
+      }
+    ]
+  },
+  "db": {
+    "host": "mongodb",
+    "port": "27017",
+    "database": "mvideo"
+  },
+  "collections": {
+    "users": "users",
+    "goods": "goods"
+  }
+}

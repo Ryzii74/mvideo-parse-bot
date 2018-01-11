@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  mongodb:
+    image: mongo:3.2
+    expose:
+      - "27017"
+    ports:
+      - "27018:27017"
+
+  rssbot:
+    image: mvideo-bot-dev
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+    volumes:
+      - ./:/opt/mvideo-bot
+
