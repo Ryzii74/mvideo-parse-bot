@@ -4,6 +4,7 @@ const goods = require('./goods');
 const parser = require('./parser');
 const bot = require('./bot');
 const users = require('./users');
+const OfferGoods = require('./offerGoods');
 
 function wait(time) {
     return new Promise(resolve => setTimeout(resolve, time));
@@ -48,9 +49,50 @@ async function checkProducts() {
     }
 }
 
+async function getOfferProducts() {
+    const goods = await OfferGoods.getNew();
+    await OfferGoods.clearNew();
+    const changedGoods = [];
+    const addedGoods = [];
+    for (let i = 0; i < goods.length; i++) {
+        const good = goods[i];
+        const goodData = await OfferGoods.getOne(good.name);
+        if (goodData && goodData.price == good.price) continue;
+
+        await OfferGoods.updateOne(good);
+        if (!goodData) {
+            addedGoods.push(good);
+        } else {
+            changedGoods.push(good);
+        }
+    }
+
+    let message = '';
+    message += goodsMessagePart(addedGoods, 'Добавленные товары');
+    message += goodsMessagePart(changedGoods, 'Измененные товары');
+    if (!message) return;
+
+    const userIds = await users.getAllIds();
+    bot.sendToUsers(userIds, message);
+}
+
+function goodsMessagePart(array, baseName) {
+    let message = '';
+    if (!array || array.length) return message;
+
+    message += `${baseName}:\n`;
+    message += array
+        .map(good => `${good.name} - ${good.price}`)
+        .join('\n');
+
+    return message + '\n';
+}
+
 module.exports = {
     init() {
         checkProducts();
+        getOfferProducts();
         setInterval(checkProducts, 4 * 60 * 60 * 1000);
+        setInterval(getOfferProducts, 60 * 60 * 1000);
     }
 };

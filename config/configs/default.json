@@ -31,6 +31,8 @@
   },
   "collections": {
     "users": "users",
-    "goods": "goods"
+    "goods": "goods",
+    "newOfferGoods": "newOfferGoods",
+    "offerGoods": "offerGoods"
   }
 }
