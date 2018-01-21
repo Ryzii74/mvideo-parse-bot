@@ -14,9 +14,14 @@ module.exports = {
         return collection.deleteMany({});
     },
 
-    async getOne(name) {
+    async clearOld() {
         const collection = db.get().collection(config.collections.offerGoods);
-        return collection.findOne({ name }, { _id: 0 });
+        return collection.deleteMany({});
+    },
+
+    async getAll() {
+        const collection = db.get().collection(config.collections.offerGoods);
+        return collection.find({}, { _id: 0 }).toArray();
     },
 
     async updateOne({ name, price }) {
