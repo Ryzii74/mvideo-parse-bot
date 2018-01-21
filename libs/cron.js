@@ -5,6 +5,7 @@ const parser = require('./parser');
 const bot = require('./bot');
 const users = require('./users');
 const OfferGoods = require('./offerGoods');
+const Yandex = require('./yandex');
 
 function wait(time) {
     return new Promise(resolve => setTimeout(resolve, time));
@@ -51,15 +52,22 @@ async function checkProducts() {
 
 async function getOfferProducts() {
     const goods = await OfferGoods.getNew();
+    console.log('Текущие предложения в МВидео', goods);
+    const currentGoods = await OfferGoods.getAll();
     await OfferGoods.clearNew();
+    await OfferGoods.clearOld();
+
     const changedGoods = [];
     const addedGoods = [];
     for (let i = 0; i < goods.length; i++) {
+        if (!good.price) continue;
+
         const good = goods[i];
-        const goodData = await OfferGoods.getOne(good.name);
+        const goodData = currentGoods.find(el => el.name === good.name);
+        await OfferGoods.updateOne(good);
         if (goodData && goodData.price == good.price) continue;
 
-        await OfferGoods.updateOne(good);
+        console.log('Обновление товара в МВидео', good);
         if (!goodData) {
             addedGoods.push(good);
         } else {
@@ -67,22 +75,31 @@ async function getOfferProducts() {
         }
     }
 
+    if (!addedGoods.length && !changedGoods.length) return;
+
+    await Yandex.getInfoMany(addedGoods.concat(changedGoods));
+
     let message = '';
     message += goodsMessagePart(addedGoods, 'Добавленные товары');
     message += goodsMessagePart(changedGoods, 'Измененные товары');
-    if (!message) return;
-
+    console.log('Сообщение об обновлении товаров в МВидео', message);
     const userIds = await users.getAllIds();
     bot.sendToUsers(userIds, message);
 }
 
 function goodsMessagePart(array, baseName) {
     let message = '';
-    if (!array || array.length) return message;
+    if (!array || !array.length) return message;
 
     message += `${baseName}:\n`;
     message += array
-        .map(good => `${good.name} - ${good.price}`)
+        .map(good => {
+            if (good.yandexUrl && good.yandexPrice) {
+                return `${good.name} - ${good.price}\nЦена market - ${good.yandexPrice}\nUrl market - ${good.yandexUrl}\n`;
+            } else {
+                return `${good.name} - ${good.price}\n`;
+            }
+        })
         .join('\n');
 
     return message + '\n';
