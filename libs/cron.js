@@ -60,9 +60,9 @@ async function getOfferProducts() {
     const changedGoods = [];
     const addedGoods = [];
     for (let i = 0; i < goods.length; i++) {
+        const good = goods[i];
         if (!good.price) continue;
 
-        const good = goods[i];
         const goodData = currentGoods.find(el => el.name === good.name);
         await OfferGoods.updateOne(good);
         if (goodData && goodData.price == good.price) continue;
@@ -77,7 +77,7 @@ async function getOfferProducts() {
 
     if (!addedGoods.length && !changedGoods.length) return;
 
-    await Yandex.getInfoMany(addedGoods.concat(changedGoods));
+    //await Yandex.getInfoMany(addedGoods.concat(changedGoods));
 
     let message = '';
     message += goodsMessagePart(addedGoods, 'Добавленные товары');

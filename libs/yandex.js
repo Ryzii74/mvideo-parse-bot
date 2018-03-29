@@ -39,8 +39,3 @@ module.exports = {
 
     getInfoOne,
 };
-
-(async function() {
-    const data = await getInfoOne('Монитор Samsung C34F791WQI');
-    console.log(data);
-})();
