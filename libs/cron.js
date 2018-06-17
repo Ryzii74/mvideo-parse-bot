@@ -5,7 +5,11 @@ const parser = require('./parser');
 const bot = require('./bot');
 const users = require('./users');
 const OfferGoods = require('./offerGoods');
-const Yandex = require('./yandex');
+
+const HOSTS = {
+    mvideo: 'http://mvideo.ru',
+    dns: 'http://dns-shop.ru',
+};
 
 function wait(time) {
     return new Promise(resolve => setTimeout(resolve, time));
@@ -50,12 +54,12 @@ async function checkProducts() {
     }
 }
 
-async function getOfferProducts() {
-    const goods = await OfferGoods.getNew();
-    console.log('Текущие предложения в МВидео', goods);
-    const currentGoods = await OfferGoods.getAll();
-    await OfferGoods.clearNew();
-    await OfferGoods.clearOld();
+async function getOfferProducts(shop) {
+    const goods = await OfferGoods.getNew(shop);
+    console.log(`Текущие предложения в ${shop}`, goods);
+    const currentGoods = await OfferGoods.getAll(shop);
+    await OfferGoods.clearNew(shop);
+    await OfferGoods.clearOld(shop);
 
     const changedGoods = [];
     const addedGoods = [];
@@ -64,10 +68,10 @@ async function getOfferProducts() {
         if (!good.price) continue;
 
         const goodData = currentGoods.find(el => el.name === good.name);
-        await OfferGoods.updateOne(good);
+        await OfferGoods.updateOne(shop, good);
         if (goodData && goodData.price == good.price) continue;
 
-        console.log('Обновление товара в МВидео', good);
+        console.log(`Обновление товара в ${shop}`, good);
         if (!goodData) {
             addedGoods.push(good);
         } else {
@@ -77,29 +81,22 @@ async function getOfferProducts() {
 
     if (!addedGoods.length && !changedGoods.length) return;
 
-    //await Yandex.getInfoMany(addedGoods.concat(changedGoods));
-
     let message = '';
-    message += goodsMessagePart(addedGoods, 'Добавленные товары');
-    message += goodsMessagePart(changedGoods, 'Измененные товары');
-    console.log('Сообщение об обновлении товаров в МВидео', message);
+    message += goodsMessagePart(shop, addedGoods, `Добавленные товары в ${shop}`);
+    message += goodsMessagePart(shop, changedGoods, `Измененные товары в ${shop}`);
+    console.log(`Сообщение об обновлении товаров в ${shop}`, message);
     const userIds = await users.getAllIds();
     bot.sendToUsers(userIds, message);
 }
 
-function goodsMessagePart(array, baseName) {
+function goodsMessagePart(shop, array, baseName) {
     let message = '';
     if (!array || !array.length) return message;
 
+    const host = HOSTS[shop];
     message += `${baseName}:\n`;
     message += array
-        .map(good => {
-            if (good.yandexUrl && good.yandexPrice) {
-                return `${good.name} - ${good.price}\nЦена market - ${good.yandexPrice}\nUrl market - ${good.yandexUrl}\n`;
-            } else {
-                return `${good.name} - ${good.price}\n`;
-            }
-        })
+        .map(good => `${good.name} - ${good.price}\n${host}${good.url}\n`)
         .join('\n');
 
     return message + '\n';
@@ -108,8 +105,10 @@ function goodsMessagePart(array, baseName) {
 module.exports = {
     init() {
         checkProducts();
-        getOfferProducts();
+        getOfferProducts('mvideo');
+        getOfferProducts('dns');
         setInterval(checkProducts, 4 * 60 * 60 * 1000);
-        setInterval(getOfferProducts, 60 * 60 * 1000);
+        setInterval(getOfferProducts.bind(null, 'mvideo'), 60 * 60 * 1000);
+        setTimeout(() => setInterval(getOfferProducts.bind(null, 'dns'), 60 * 60 * 1000), 300000);
     }
 };

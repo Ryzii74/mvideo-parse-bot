@@ -3,29 +3,33 @@
 const db = require('./db');
 const config = require('../config');
 
+function getCollection(shop, type) {
+    return db.get().collection(`${shop}_${type}`);
+}
+
 module.exports = {
-    async getNew() {
-        const collection = db.get().collection(config.collections.newOfferGoods);
+    async getNew(shop) {
+        const collection = getCollection(shop, 'new');
         return collection.find().toArray();
     },
 
-    async clearNew() {
-        const collection = db.get().collection(config.collections.newOfferGoods);
+    async clearNew(shop) {
+        const collection = getCollection(shop, 'new');
         return collection.deleteMany({});
     },
 
-    async clearOld() {
-        const collection = db.get().collection(config.collections.offerGoods);
+    async clearOld(shop) {
+        const collection = getCollection(shop, 'current');
         return collection.deleteMany({});
     },
 
-    async getAll() {
-        const collection = db.get().collection(config.collections.offerGoods);
+    async getAll(shop) {
+        const collection = getCollection(shop, 'current');
         return collection.find({}, { _id: 0 }).toArray();
     },
 
-    async updateOne({ name, price }) {
-        const collection = db.get().collection(config.collections.offerGoods);
+    async updateOne(shop, { name, price }) {
+        const collection = getCollection(shop, 'current');
         return collection.updateOne({ name }, { $set: { price } }, { upsert: true });
     },
 };
