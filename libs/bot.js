@@ -42,6 +42,12 @@ module.exports = {
         users.forEach(user => this.sendToUser(user, message));
     },
 
+    sendManyToUsers(users, messages) {
+        messages.forEach(message => {
+            users.forEach(user => this.sendToUser(user, message));
+        });
+    },
+
     sendResult(chatId, result) {
         if (Array.isArray(result)) {
             result.forEach(message => {

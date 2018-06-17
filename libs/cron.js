@@ -81,25 +81,18 @@ async function getOfferProducts(shop) {
 
     if (!addedGoods.length && !changedGoods.length) return;
 
-    let message = '';
-    message += goodsMessagePart(shop, addedGoods, `Добавленные товары в ${shop}`);
-    message += goodsMessagePart(shop, changedGoods, `Измененные товары в ${shop}`);
-    console.log(`Сообщение об обновлении товаров в ${shop}`, message);
+    const messagesAdded = goodsMessagePart(shop, addedGoods, `Добавленный товар в ${shop}`);
+    const messagesChanged = goodsMessagePart(shop, changedGoods, `Измененный товар в ${shop}`);
     const userIds = await users.getAllIds();
-    bot.sendToUsers(userIds, message);
+    bot.sendManyToUsers(userIds, messagesAdded);
+    bot.sendManyToUsers(userIds, messagesChanged);
 }
 
 function goodsMessagePart(shop, array, baseName) {
-    let message = '';
-    if (!array || !array.length) return message;
+    if (!array || !array.length) return [];
 
     const host = HOSTS[shop];
-    message += `${baseName}:\n`;
-    message += array
-        .map(good => `${good.name} - ${good.price}\n${host}${good.url}\n`)
-        .join('\n');
-
-    return message + '\n';
+    return array.map(good => `${baseName}:\n${good.name} - ${good.price}\n${host}${good.url}`);
 }
 
 module.exports = {
