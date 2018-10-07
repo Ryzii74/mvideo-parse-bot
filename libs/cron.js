@@ -36,6 +36,10 @@ async function checkProducts() {
                 message += `\nНовая цена Екб - ${compare.ekbPriceAfter}`;
                 message += `\nСтарая доступность Екб - ${compare.ekbAvailableBefore}`;
                 message += `\nНовая доступность Екб - ${compare.ekbAvailableAfter}`;
+                message += `\nСтарая цена Мгн - ${compare.mgnPriceBefore}`;
+                message += `\nНовая цена Мгн - ${compare.mgnPriceAfter}`;
+                message += `\nСтарая доступность Мгн - ${compare.mgnAvailableBefore}`;
+                message += `\nНовая доступность Мгн - ${compare.mgnAvailableAfter}`;
                 bot.sendToUsers(userIds, message);
             }
             if (exist) {

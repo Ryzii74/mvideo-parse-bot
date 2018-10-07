@@ -4,7 +4,7 @@ const got = require('got');
 const cheerio = require('cheerio');
 
 async function getCity(url, cityCode) {
-    const { body } = await got(`${url}?cityId=CityCZ_${cityCode}`);
+    const { body } = await got(`${url}?cityId=City${cityCode}`);
     const $ = cheerio.load(body);
 
     const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -26,15 +26,18 @@ async function getCity(url, cityCode) {
 module.exports = {
     async get(url) {
         try {
-            const chelData = await getCity(url, '1216');
-            const ekbData = await getCity(url, '2030');
+            const chelData = await getCity(url, 'CZ_1216');
+            const ekbData = await getCity(url, 'CZ_2030');
+            const mgnData = await getCity(url, 'R_27');
 
             return {
                 link: url,
                 chelPrice: chelData.price,
+                mgnPrice: mgnData.price,
                 ekbPrice: ekbData.price,
                 chelAvailable: (!chelData.price) ? false : chelData.isAvailable,
                 ekbAvailable: (!ekbData.price) ? false : ekbData.isAvailable,
+                mgnAvailable: (!mgnData.price) ? false : mgnData.isAvailable,
                 existed: true,
             };
         } catch (err) {
