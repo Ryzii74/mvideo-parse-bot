@@ -54,7 +54,7 @@ async function checkProducts() {
             console.error(err);
         }
 
-        await wait(Math.floor((Math.random() + 1) * 5 * 1000));
+        await wait(Math.floor((Math.random() + 1) * 3 * 1000));
     }
 }
 
