@@ -54,7 +54,7 @@ async function checkProducts() {
             console.error(err);
         }
 
-        await wait(Math.floor((Math.random() + 1) * 60 * 1000));
+        await wait(Math.floor((Math.random() + 1) * 5 * 1000));
     }
 }
 
@@ -104,7 +104,7 @@ module.exports = {
         checkProducts();
         getOfferProducts('mvideo');
         getOfferProducts('dns');
-        setInterval(checkProducts, 4 * 60 * 60 * 1000);
+        setInterval(checkProducts, 60 * 60 * 1000);
         setInterval(getOfferProducts.bind(null, 'mvideo'), 60 * 60 * 1000);
         setTimeout(() => setInterval(getOfferProducts.bind(null, 'dns'), 60 * 60 * 1000), 300000);
     }
