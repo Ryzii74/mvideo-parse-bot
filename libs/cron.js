@@ -23,7 +23,7 @@ async function checkProducts() {
         const good = links[i];
         try {
             const goodData = await parser.get(good.link);
-            console.log(new Date(), 'проверка товара', good.link, goodData.chelPrice, goodData.chelAvailable, goodData.ekbPrice, goodData.ekbAvailable);
+            console.log(new Date(), 'проверка товара', good.link, goodData);
             const { compare, exist } = await goods.compareAndUpdate(goodData);
             if (compare) {
                 const userIds = await users.getAllIds();

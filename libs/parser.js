@@ -1,10 +1,11 @@
 "use strict";
 
-const got = require('got');
 const cheerio = require('cheerio');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
 async function getCity(url, cityCode) {
-    const { body } = await got(`${url}?cityId=City${cityCode}`);
+    const { stdout: body } = await exec(`curl https://${url}?cityId=City${cityCode}`, {maxBuffer: 1024 * 5000});
     const $ = cheerio.load(body);
 
     const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -41,6 +42,7 @@ module.exports = {
                 existed: true,
             };
         } catch (err) {
+            console.log(err);
             return {
                 existed: false,
             }
