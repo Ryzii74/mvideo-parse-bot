@@ -34,7 +34,11 @@ module.exports = {
     },
 
     sendToUser(userId, message) {
+      try {
         bot.sendMessage(userId, message);
+      } catch (err) {
+        console.error('sendToUserError', err.message);
+      }
     },
 
     sendToUsers(users, message) {
