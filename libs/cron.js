@@ -15,6 +15,11 @@ function wait(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
 
+function flagToMessage(value) {
+    if (value === undefined) return 'неизвестно';
+    return value ? 'да' : 'нет';
+}
+
 async function checkProducts() {
     const links = await goods.getAllLinks();
     const userIds = await users.getAllIds();
@@ -27,9 +32,9 @@ async function checkProducts() {
             if (compare) {
                 let message = `Изменения в товаре: ${good.link}`;
                 message += `\nЦена - ${compare.chelPriceBefore} -> ${compare.chelPriceAfter}`;
-                message += `\nДоступность - ${compare.chelAvailableBefore} -> ${compare.chelAvailableAfter}`;
-                message += `\nTrade-in - ${compare.chelIsTradeInBefore} -> ${compare.chelIsTradeInAfter}`;
-                message += `\nБольше бонусных рублей - ${compare.chelIsBonusExtendedBefore} -> ${compare.chelIsBonusExtendedAfter}`;
+                message += `\nДоступность - ${flagToMessage(compare.chelAvailableBefore)} -> ${flagToMessage(compare.chelAvailableAfter)}`;
+                message += `\nTrade-in - ${flagToMessage(compare.chelIsTradeInBefore)} -> ${flagToMessage(compare.chelIsTradeInAfter)}`;
+                message += `\nБольше бонусных рублей - ${flagToMessage(compare.chelIsBonusExtendedBefore)} -> ${flagToMessage(compare.chelIsBonusExtendedAfter)}`;
                 bot.sendToUsers(userIds, message);
             }
             if (exist) {

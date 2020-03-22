@@ -23,8 +23,8 @@ async function getCity(url, cityCode) {
         .split('')
         .filter(letter => numbers.indexOf(letter) !== -1)
         .join('');
-    const isTradeIn = $('.o-pay__trade-toggle').length > 0;
-    const isBonusExtended = $('.u-color-red wrapper-text__rouble').length > 2;
+    const isTradeIn = $('.o-pay__trade-toggle').get().length > 0;
+    const isBonusExtended = $('.u-color-red wrapper-text__rouble').get().length > 2;
 
     const notification = $('.c-notifications__title').first().text() || "";
 
