@@ -23,23 +23,39 @@ async function getCity(url, cityCode) {
         .split('')
         .filter(letter => numbers.indexOf(letter) !== -1)
         .join('');
+    const isTradeIn = $('.o-pay__trade-toggle').length > 0;
+    const isBonusExtended = $('.u-color-red wrapper-text__rouble').length > 2;
 
     const notification = $('.c-notifications__title').first().text() || "";
 
     return {
         price: price,
         isAvailable: notification.trim() !== 'Товар временно отсутствует в продаже',
+        isTradeIn,
+        isBonusExtended,
     };
 }
 
 module.exports = {
     async get(url) {
         const chelData = await getCity(url, 'CZ_1216');
+        if (!chelData.price) {
+            return {
+                link: url,
+                chelPrice: chelData.price,
+                chelAvailable: false,
+                checlIsTradeIn: false,
+                checlIsBonusExtended: false,
+                existed: false,
+            };
+        }
 
         return {
             link: url,
             chelPrice: chelData.price,
-            chelAvailable: (!chelData.price) ? false : chelData.isAvailable,
+            chelAvailable: chelData.isAvailable,
+            chelIsTradeIn: chelData.isAvailable,
+            chelIsBonusExtended: chelData.isBonusExtended,
             existed: true,
         };
     },

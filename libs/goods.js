@@ -19,7 +19,9 @@ module.exports = {
         }
 
         if (good.chelPrice === goodDocument.chelPrice
-            && good.chelAvailable === goodDocument.chelAvailable) {
+            && good.chelAvailable === goodDocument.chelAvailable
+            && good.chelIsTradeIn === goodDocument.chelIsTradeIn
+            && good.chelIsBonusExtended === goodDocument.chelIsBonusExtended) {
             return {};
         }
 
@@ -30,6 +32,10 @@ module.exports = {
                 chelPriceAfter: good.chelPrice,
                 chelAvailableBefore: goodDocument.chelAvailable,
                 chelAvailableAfter: good.chelAvailable,
+                chelIsTradeInBefore: goodDocument.chelIsTradeIn,
+                chelIsTradeInAfter: good.chelIsTradeIn,
+                chelIsBonusExtendedBefore: goodDocument.chelIsBonusExtended,
+                chelIsBonusExtendedAfter: good.chelIsBonusExtended,
             },
         };
     },
@@ -64,7 +70,7 @@ module.exports = {
     },
 
     getData(data) {
-        return `Цена: ${data.chelPrice}\nДоступность: ${data.chelAvailable ? 'Да' : 'Нет'}`;
+        return `Цена: ${data.chelPrice}\nДоступность: ${data.chelAvailable ? 'Да' : 'Нет'}\nTrade-in: ${data.chelIsTradeIn ? 'Да' : 'Нет'}\nБольше бонусных рублей: ${data.chelIsBonusExtended ? 'Да' : 'Нет'}`;
     },
 
     async getAllLinks() {

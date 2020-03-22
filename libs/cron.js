@@ -28,6 +28,8 @@ async function checkProducts() {
                 let message = `Изменения в товаре: ${good.link}`;
                 message += `\nЦена - ${compare.chelPriceBefore} -> ${compare.chelPriceAfter}`;
                 message += `\nДоступность - ${compare.chelAvailableBefore} -> ${compare.chelAvailableAfter}`;
+                message += `\nTrade-in - ${compare.chelIsTradeInBefore} -> ${compare.chelIsTradeInAfter}`;
+                message += `\nБольше бонусных рублей - ${compare.chelIsBonusExtendedBefore} -> ${compare.chelIsBonusExtendedAfter}`;
                 bot.sendToUsers(userIds, message);
             }
             if (exist) {
