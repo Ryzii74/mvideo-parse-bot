@@ -5,10 +5,13 @@ const config = require('../config');
 
 const PAGE_SIZE = 25;
 
+function getCollection() {
+    return db.get().collection(config.collections.goods);
+}
+
 module.exports = {
     async compareAndUpdate(good) {
-        const collection = db.get().collection(config.collections.goods);
-        let goodDocument = await collection.findOne({ link: good.link });
+        let goodDocument = await this.getByLink(good.link);
         if (!goodDocument) goodDocument = {};
 
         if (good.existed !== goodDocument.existed) {
@@ -24,7 +27,7 @@ module.exports = {
             return {};
         }
 
-        await collection.updateOne({ link: good.link }, { $set: good }, { upsert: true });
+        await getCollection().updateOne({ link: good.link }, { $set: good }, { upsert: true });
         return {
             compare: {
                 chelPriceBefore: goodDocument.chelPrice || 'Неизвестно',
@@ -44,25 +47,32 @@ module.exports = {
     },
 
     async getCount() {
-        const collection = db.get().collection(config.collections.goods);
-        return collection.count({});
+        return getCollection().count({});
+    },
+
+    async getLastNumber() {
+        const lastCreatedDocument = await getCollection()
+          .find({}, { number: 1 })
+          .limit(1)
+          .sort({ _id: -1 })
+          .toArray();
+        return (lastCreatedDocument[0] && lastCreatedDocument[0].number) || 0;
+    },
+
+    async getByLink(link) {
+        return getCollection().findOne({ link });
     },
 
     async add(good) {
-        const collection = db.get().collection(config.collections.goods);
-        const goodDocument = await collection.findOne({ link: good.link });
-        if (goodDocument) return null;
+        const goodDocument = await this.getByLink(good.link);
+        if (goodDocument) return;
 
-        let lastNumber = await collection
-                .find({}, { number: 1 })
-                .limit(1)
-                .sort({ _id: -1 })
-                .toArray();
-        lastNumber = (lastNumber[0] && lastNumber[0].number) || 0;
-
-        good.createdAt = new Date();
-        good.number = lastNumber + 1;
-        await collection.insertOne(good);
+        let lastNumber = await this.getLastNumber();
+        await getCollection().insertOne({
+            ...good,
+            createdAt: new Date(),
+            number: lastNumber + 1,
+        });
     },
 
     getData(data) {
@@ -70,15 +80,13 @@ module.exports = {
     },
 
     async getAllLinks() {
-        const collection = db.get().collection(config.collections.goods);
-        return collection.find({}, { link: 1, number: 1 }).toArray();
+        return getCollection().find({}, { link: 1, number: 1 }).toArray();
     },
 
     async getLinksPage(pageNumber) {
         if (pageNumber < 1) pageNumber = 1;
 
-        const collection = db.get().collection(config.collections.goods);
-        return collection
+        return getCollection()
             .find({}, { link: 1, number: 1 })
             .skip((pageNumber - 1) * PAGE_SIZE)
             .limit(PAGE_SIZE)
@@ -86,7 +94,6 @@ module.exports = {
     },
 
     async remove(number) {
-        const collection = db.get().collection(config.collections.goods);
-        await collection.removeOne({ number });
+        await getCollection().removeOne({ number });
     }
 };
