@@ -21,7 +21,7 @@ module.exports = {
                     if (result) this.sendResult(msg.chat.id, result)
                 } catch (err) {
                     console.error('commandError', err);
-                    bot.sendMessage(msg.chat.id, err.message);
+                    this.sendToUser(msg.chat.id, err.message);
                 }
             });
         });
@@ -33,9 +33,9 @@ module.exports = {
         });
     },
 
-    sendToUser(userId, message) {
+    async sendToUser(userId, message) {
       try {
-        bot.sendMessage(userId, message);
+        await bot.sendMessage(userId, message);
       } catch (err) {
         console.error('sendToUserError', err.message);
       }
