@@ -4,6 +4,15 @@ const cheerio = require('cheerio');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 
+function getNumber(text) {
+    const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    return text
+      .trim()
+      .split('')
+      .filter(letter => numbers.indexOf(letter) !== -1)
+      .join('');
+}
+
 async function getCity(url, cityCode) {
     let body;
     try {
@@ -16,15 +25,10 @@ async function getCity(url, cityCode) {
     }
     const $ = cheerio.load(body);
 
-    const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
     const priceFieldText = $('.sel-product-tile-price').first().text();
-    const price = priceFieldText
-        .trim()
-        .split('')
-        .filter(letter => numbers.indexOf(letter) !== -1)
-        .join('');
+    const price = getNumber(priceFieldText);
     const isTradeIn = $('.o-pay__trade-toggle').get().length > 0;
-    const isBonusExtended = $('.u-color-red .wrapper-text__rouble').get().length > 2;
+    const bonus = getNumber($('.u-color-red.wrapper-text__rouble').first().text());
 
     const notification = $('.c-notifications__title').first().text() || "";
 
@@ -32,7 +36,7 @@ async function getCity(url, cityCode) {
         price: price,
         isAvailable: notification.trim() !== 'Товар временно отсутствует в продаже',
         isTradeIn,
-        isBonusExtended,
+        bonus,
     };
 }
 
@@ -45,7 +49,7 @@ module.exports = {
                 chelPrice: chelData.price,
                 chelAvailable: false,
                 checlIsTradeIn: false,
-                checlIsBonusExtended: false,
+                chelBonus: 0,
                 existed: false,
             };
         }
@@ -55,7 +59,7 @@ module.exports = {
             chelPrice: chelData.price,
             chelAvailable: chelData.isAvailable,
             chelIsTradeIn: chelData.isTradeIn,
-            chelIsBonusExtended: chelData.isBonusExtended,
+            chelBonus: chelData.bonus,
             existed: true,
         };
     },

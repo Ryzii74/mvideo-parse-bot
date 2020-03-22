@@ -34,7 +34,7 @@ async function checkProducts() {
                 message += `\nЦена - ${compare.chelPriceBefore} -> ${compare.chelPriceAfter}`;
                 message += `\nДоступность - ${flagToMessage(compare.chelAvailableBefore)} -> ${flagToMessage(compare.chelAvailableAfter)}`;
                 message += `\nTrade-in - ${flagToMessage(compare.chelIsTradeInBefore)} -> ${flagToMessage(compare.chelIsTradeInAfter)}`;
-                message += `\nБольше бонусных рублей - ${flagToMessage(compare.chelIsBonusExtendedBefore)} -> ${flagToMessage(compare.chelIsBonusExtendedAfter)}`;
+                message += `\nБонусные рубли - ${compare.chelBonusBefore} -> ${compare.chelBonusAfter}`;
                 bot.sendToUsers(userIds, message);
             }
             if (exist) {
