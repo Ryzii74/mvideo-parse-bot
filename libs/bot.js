@@ -38,7 +38,6 @@ module.exports = {
     },
 
     sendToUsers(users, message) {
-        console.log('sendToUsers', users, message);
         users.forEach(user => this.sendToUser(user, message));
     },
 

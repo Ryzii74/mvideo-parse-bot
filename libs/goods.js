@@ -19,11 +19,7 @@ module.exports = {
         }
 
         if (good.chelPrice === goodDocument.chelPrice
-            && good.ekbPrice === goodDocument.ekbPrice
-            && good.mgnPrice === goodDocument.mgnPrice
-            && good.chelAvailable === goodDocument.chelAvailable
-            && good.mgnAvailable === goodDocument.mgnAvailable
-            && good.ekbAvailable === goodDocument.ekbAvailable) {
+            && good.chelAvailable === goodDocument.chelAvailable) {
             return {};
         }
 
@@ -34,14 +30,6 @@ module.exports = {
                 chelPriceAfter: good.chelPrice,
                 chelAvailableBefore: goodDocument.chelAvailable,
                 chelAvailableAfter: good.chelAvailable,
-                ekbPriceBefore: goodDocument.ekbPrice || 'Неизвестно',
-                ekbAvailableBefore: goodDocument.ekbAvailable,
-                ekbAvailableAfter: good.ekbAvailable,
-                ekbPriceAfter: good.ekbPrice,
-                mgnPriceBefore: goodDocument.mgnPrice || 'Неизвестно',
-                mgnPriceAfter: good.mgnPrice,
-                mgnAvailableBefore: goodDocument.mgnAvailable,
-                mgnAvailableAfter: good.mgnAvailable,
             },
         };
     },
@@ -76,7 +64,7 @@ module.exports = {
     },
 
     getData(data) {
-        return `Цена Екб: ${data.ekbPrice}\nДоступен Екб: ${data.ekbAvailable ? 'Да' : 'Нет'}\nЦена Чел: ${data.chelPrice}\nДоступен Чел: ${data.chelAvailable ? 'Да' : 'Нет'}\nЦена Мгн: ${data.mgnPrice}\nДоступен Мгн: ${data.mgnAvailable ? 'Да' : 'Нет'}`;
+        return `Цена: ${data.chelPrice}\nДоступность: ${data.chelAvailable ? 'Да' : 'Нет'}`;
     },
 
     async getAllLinks() {

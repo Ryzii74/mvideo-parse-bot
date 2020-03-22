@@ -17,29 +17,17 @@ function wait(time) {
 
 async function checkProducts() {
     const links = await goods.getAllLinks();
-    console.log(new Date(), `${links.length} товаров в базе`);
+    const userIds = await users.getAllIds();
 
     for (let i = 0; i < links.length; i++) {
         const good = links[i];
         try {
             const goodData = await parser.get(good.link);
-            console.log(new Date(), 'проверка товара', good.link, goodData);
             const { compare, exist } = await goods.compareAndUpdate(goodData);
             if (compare) {
-                const userIds = await users.getAllIds();
                 let message = `Изменения в товаре: ${good.link}`;
-                message += `\nСтарая цена Чел - ${compare.chelPriceBefore}`;
-                message += `\nНовая цена Чел - ${compare.chelPriceAfter}`;
-                message += `\nСтарая доступность Чел - ${compare.chelAvailableBefore}`;
-                message += `\nНовая доступность Чел - ${compare.chelAvailableAfter}`;
-                message += `\nСтарая цена Екб - ${compare.ekbPriceBefore}`;
-                message += `\nНовая цена Екб - ${compare.ekbPriceAfter}`;
-                message += `\nСтарая доступность Екб - ${compare.ekbAvailableBefore}`;
-                message += `\nНовая доступность Екб - ${compare.ekbAvailableAfter}`;
-                message += `\nСтарая цена Мгн - ${compare.mgnPriceBefore}`;
-                message += `\nНовая цена Мгн - ${compare.mgnPriceAfter}`;
-                message += `\nСтарая доступность Мгн - ${compare.mgnAvailableBefore}`;
-                message += `\nНовая доступность Мгн - ${compare.mgnAvailableAfter}`;
+                message += `\nЦена - ${compare.chelPriceBefore} -> ${compare.chelPriceAfter}`;
+                message += `\nДоступность - ${compare.chelAvailableBefore} -> ${compare.chelAvailableAfter}`;
                 bot.sendToUsers(userIds, message);
             }
             if (exist) {
@@ -51,7 +39,7 @@ async function checkProducts() {
                 }
             }
         } catch (err) {
-            console.error(err);
+            bot.sendToUsers(userIds, err.message);
         }
 
         await wait(Math.floor((Math.random() + 1) * 3 * 1000));
