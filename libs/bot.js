@@ -38,17 +38,10 @@ module.exports = {
         await bot.sendMessage(userId, message);
       } catch (err) {
         console.error('sendToUserError', err.message);
+        if (err.message === 'ETELEGRAM: 403 Forbidden: bot was blocked by the user') {
+            throw new Error('userBlocked');
+        }
       }
-    },
-
-    sendToUsers(users, message) {
-        users.forEach(user => this.sendToUser(user, message));
-    },
-
-    sendManyToUsers(users, messages) {
-        messages.forEach(message => {
-            users.forEach(user => this.sendToUser(user, message));
-        });
     },
 
     sendResult(chatId, result) {

@@ -2,9 +2,9 @@
 
 const goods = require('./goods');
 const parser = require('./parser');
-const bot = require('./bot');
 const users = require('./users');
 const OfferGoods = require('./offerGoods');
+const notifier = require('./notifier');
 
 const HOSTS = {
     mvideo: 'http://mvideo.ru',
@@ -35,7 +35,7 @@ async function checkProducts() {
                 message += `\nДоступность - ${flagToMessage(compare.chelAvailableBefore)} -> ${flagToMessage(compare.chelAvailableAfter)}`;
                 message += `\nTrade-in - ${flagToMessage(compare.chelIsTradeInBefore)} -> ${flagToMessage(compare.chelIsTradeInAfter)}`;
                 message += `\nБонусные рубли - ${compare.chelBonusBefore} -> ${compare.chelBonusAfter}`;
-                bot.sendToUsers(userIds, message);
+                await notifier.send(userIds, message);
             }
             if (exist) {
                 let message = `Изменения в товаре: ${good.link}`;
@@ -46,10 +46,10 @@ async function checkProducts() {
                 }
             }
         } catch (err) {
-            bot.sendToUsers(userIds, err.message);
+            await notifier.send(userIds, err.message);
         }
 
-        await wait(Math.floor((Math.random() + 1) * 3 * 1000));
+        await wait(Math.floor((Math.random() + 1) * 5 * 1000));
     }
 }
 
@@ -83,8 +83,8 @@ async function getOfferProducts(shop) {
     const messagesAdded = goodsMessagePart(shop, addedGoods, `Добавленный товар в ${shop}`);
     const messagesChanged = goodsMessagePart(shop, changedGoods, `Измененный товар в ${shop}`);
     const userIds = await users.getAllIds();
-    bot.sendManyToUsers(userIds, messagesAdded);
-    bot.sendManyToUsers(userIds, messagesChanged);
+    await notifier.sendMany(userIds, messagesAdded);
+    await notifier.sendMany(userIds, messagesChanged);
 }
 
 function goodsMessagePart(shop, array, baseName) {

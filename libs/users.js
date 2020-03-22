@@ -3,20 +3,25 @@
 const db = require('./db');
 const config = require('../config');
 
+function getCollection() {
+    return db.get().collection(config.collections.users);
+}
+
 module.exports = {
     async add(user) {
-        const collection = db.get().collection(config.collections.users);
-
-        const userDocument = await collection.findOne({ id: user.id });
+        const userDocument = await getCollection().findOne({ id: user.id });
         if (userDocument) return null;
 
         user.createdAt = new Date();
-        await collection.insertOne(user);
+        await getCollection().insertOne(user);
+    },
+
+    async remove(user) {
+        await getCollection().removeOne({ id: user.id });
     },
 
     async getAllIds() {
-        const users = await db.get().collection(config.collections.users)
-            .find({}, { id: 1, _id: 0 }).toArray();
+        const users = await getCollection().find({}, { id: 1, _id: 0 }).toArray();
         return users.map(el => el.id);
     },
 };
