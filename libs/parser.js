@@ -24,7 +24,7 @@ async function getCity(url, cityCode) {
         .filter(letter => numbers.indexOf(letter) !== -1)
         .join('');
     const isTradeIn = $('.o-pay__trade-toggle').get().length > 0;
-    const isBonusExtended = $('.u-color-red wrapper-text__rouble').get().length > 2;
+    const isBonusExtended = $('.u-color-red .wrapper-text__rouble').get().length > 2;
 
     const notification = $('.c-notifications__title').first().text() || "";
 
@@ -54,7 +54,7 @@ module.exports = {
             link: url,
             chelPrice: chelData.price,
             chelAvailable: chelData.isAvailable,
-            chelIsTradeIn: chelData.isAvailable,
+            chelIsTradeIn: chelData.isTradeIn,
             chelIsBonusExtended: chelData.isBonusExtended,
             existed: true,
         };
