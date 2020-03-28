@@ -42,7 +42,8 @@ async function getCity(url, cityCode) {
 
 module.exports = {
     async get(url) {
-        const chelData = await getCity(url, 'CZ_1216');
+        const getCityWithRetry = retry(getCity, 3);
+        const chelData = await getCityWithRetry(url, 'CZ_1216');
         if (!chelData.price) {
             return {
                 link: url,
@@ -64,3 +65,18 @@ module.exports = {
         };
     },
 };
+
+function retry(func, retryCount) {
+    return async function (...args) {
+        let triesCount = 0;
+        while (triesCount < retryCount) {
+            try {
+                return await func(...args);
+            } catch (err) {
+                triesCount++;
+            }
+        }
+
+        throw new Error(`retried ${retryCount} times`);
+    }
+}
