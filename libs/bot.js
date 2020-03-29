@@ -1,5 +1,6 @@
 "use strict";
 
+const config = require('../config');
 const TelegramBot = require('node-telegram-bot-api');
 
 let bot;
@@ -16,9 +17,13 @@ module.exports = {
             const regexp = new RegExp(`${command.substr}`);
             bot.onText(regexp, async (msg, match) => {
                 try {
+                    if (!config.allowedUsers.includes(msg.from.id)) {
+                        return this.sendResult(msg.chat.id, 'Я так не умею!');
+                    }
+
                     const exec = require(`../commands/${command.name}`);
                     const result = await exec(msg, command);
-                    if (result) this.sendResult(msg.chat.id, result)
+                    if (result) this.sendResult(msg.chat.id, result);
                 } catch (err) {
                     console.error('commandError', err);
                     this.sendToUser(msg.chat.id, err.message);
