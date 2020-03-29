@@ -69,15 +69,17 @@ module.exports = {
 function retry(func, retryCount) {
     return async function (...args) {
         let triesCount = 0;
+        let error = null;
         while (triesCount < retryCount) {
             try {
                 return await func(...args);
             } catch (err) {
                 console.error(err.message);
+                error = err;
                 triesCount++;
             }
         }
 
-        throw new Error(`retried ${retryCount} times`);
+        throw error;
     }
 }
