@@ -22,7 +22,7 @@ function flagToMessage(value) {
 
 async function checkProducts() {
     const links = await goods.getAllLinks();
-    const userIds = await users.getAllIds();
+    const userIds = await users.getAllIdsToSend();
 
     for (let i = 0; i < links.length; i++) {
         const good = links[i];
@@ -82,7 +82,7 @@ async function getOfferProducts(shop) {
 
     const messagesAdded = goodsMessagePart(shop, addedGoods, `Добавленный товар в ${shop}`);
     const messagesChanged = goodsMessagePart(shop, changedGoods, `Измененный товар в ${shop}`);
-    const userIds = await users.getAllIds();
+    const userIds = await users.getAllIdsToSend();
     await notifier.sendMany(userIds, messagesAdded);
     await notifier.sendMany(userIds, messagesChanged);
 }
