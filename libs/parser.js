@@ -32,6 +32,7 @@ async function getCity(url, cityCode) {
 
     const notification = $('.c-notifications__title').first().text() || "";
 
+    console.log(url, price, bonus, notification.trim());
     return {
         price: price,
         isAvailable: notification.trim() !== 'Товар временно отсутствует в продаже',

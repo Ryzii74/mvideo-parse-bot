@@ -8,8 +8,8 @@
     "test": "nodemon index.js",
     "docker-start": "docker-compose build --no-cache && docker-compose up --force-recreate -d",
     "docker-stop": "docker-compose down -v",
-    "docker-build": "docker build --no-cache -t boronin/mvideo-bot -f ./Dockerfile .",
-    "docker-push": "docker push boronin/mvideo-bot:latest",
+    "docker-build": "docker build --no-cache -t boroninda/mvideo-bot -f ./Dockerfile .",
+    "docker-push": "docker push boroninda/mvideo-bot:latest",
     "build-dev": "docker build --no-cache -t mvideo-bot-dev -f ./dev.dockerfile .",
     "update": "ssh ocean ./restartMvideo.sh",
     "build-and-update": "npm run docker-build && npm run docker-push && npm run update"
