@@ -25,7 +25,7 @@ async function getCity(url, cityCode) {
     }
     const $ = cheerio.load(body);
 
-    const priceFieldText = $('.sel-product-tile-price').first().text();
+    const priceFieldText = $('.fl-pdp-price__current').first().text();
     const price = getNumber(priceFieldText);
     const isTradeIn = $('.o-pay__trade-toggle').get().length > 0;
     const bonus = getNumber($('.u-color-red.wrapper-text__rouble').first().text());
