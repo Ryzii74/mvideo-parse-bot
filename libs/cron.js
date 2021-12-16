@@ -2,11 +2,20 @@
 
 const {checkGoods} = require('./goods');
 const notifier = require('../core/notifier');
+const cron = require('node-cron');
 
 const CITY_CODES = {
     CHEL: {
         id: 'CZ_1216',
         name: 'Челябинск',
+    },
+    VLDVSTK: {
+        id: 'DE_31146',
+        name: 'Владивосток',
+    },
+    MSK: {
+        id: 'CZ_975',
+        name: 'Москва',
     },
 };
 
@@ -23,7 +32,11 @@ async function checkCity(cityData) {
 
 module.exports = {
     init() {
-        checkCity(CITY_CODES.CHEL);
-        setInterval(() => checkCity(CITY_CODES.CHEL), 6 * 60 * 60 * 1000);
+        cron.schedule('* 14 * * *', () => {
+            checkCity(CITY_CODES.VLDVSTK);
+        });
+        cron.schedule('* 21 * * *', () => {
+            checkCity(CITY_CODES.MSK);
+        });
     }
 };
