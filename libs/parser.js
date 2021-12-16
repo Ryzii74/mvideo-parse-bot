@@ -55,6 +55,7 @@ module.exports = {
 
 async function getPageBody(url, cityCode) {
     const args = [
+        '--incognito',
         '--no-sandbox',
         '--disable-gpu',
 
@@ -69,9 +70,10 @@ async function getPageBody(url, cityCode) {
 
     const options = {
         args,
-        headless: true,
+        headless: false,
         ignoreHTTPSErrors: true,
         acceptInsecureCerts: true,
+        executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     };
 
     try {
@@ -80,8 +82,7 @@ async function getPageBody(url, cityCode) {
         await page.setCookie({
             name: 'MVID_CITY_ID',
             value: `City${cityCode}`,
-            domain: 'mvideo.ru',
-            expires: Math.floor((Date.now() + 86400000) / 1000),
+            domain: '.www.mvideo.ru',
         });
         await page.goto(url, {
             waitUntil: 'networkidle2'
