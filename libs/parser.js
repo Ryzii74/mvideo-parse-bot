@@ -73,7 +73,6 @@ async function getPageBody(url, cityCode) {
         headless: false,
         ignoreHTTPSErrors: true,
         acceptInsecureCerts: true,
-        executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     };
 
     try {
