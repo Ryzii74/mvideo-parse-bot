@@ -83,8 +83,10 @@ async function getPageBody(url, cityCode) {
             domain: 'mvideo.ru',
             expires: Math.floor((Date.now() + 86400000) / 1000),
         });
-        await page.goto(url);
-        await page.waitForTimeout(10000);
+        await page.goto(url, {
+            waitUntil: 'networkidle2'
+        });
+        await page.waitForTimeout(60000);
         const body = await page.content();
         console.log(body);
         return body;
