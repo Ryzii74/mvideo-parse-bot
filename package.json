@@ -21,7 +21,7 @@
     "cheerio": "^1.0.0-rc.2",
     "got": "^8.0.0",
     "install": "^0.13.0",
-    "mongodb": "^2.2.33",
+    "mongodb": "^3.1.13",
     "nconf": "^0.9.1",
     "node-telegram-bot-api": "^0.29.0",
     "npm": "^8.3.0",
