@@ -70,7 +70,7 @@ async function getPageBody(url, cityCode) {
 
     const options = {
         args,
-        headless: false,
+        headless: true,
         ignoreHTTPSErrors: true,
         acceptInsecureCerts: true,
     };
