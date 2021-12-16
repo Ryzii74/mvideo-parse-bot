@@ -25,8 +25,6 @@ module.exports = {
         console.error(err);
         await notifier.sendAll(err.message);
       }
-
-      await wait(Math.floor((Math.random() + 1) * 30 * 1000));
     }
   }
 };
@@ -48,10 +46,6 @@ function getGoodDiff(updated, current) {
   message += `\nДоступность - ${flagToMessage(current.isAvailable)} -> ${flagToMessage(updated.isAvailable)}`;
   message += `\nБонусные рубли - ${current.bonus || '?'} -> ${updated.bonus}`;
   return message;
-}
-
-function wait(time) {
-  return new Promise(resolve => setTimeout(resolve, time));
 }
 
 function flagToMessage(value) {
