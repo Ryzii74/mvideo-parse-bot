@@ -32,7 +32,6 @@ module.exports = {
 function getGoodDiff(updated, current) {
   if (updated.price === current.price
     && updated.isAvailable === current.isAvailable
-    && updated.bonus === current.bonus
     && updated.isExisted === current.isExisted) {
     return null;
   }
@@ -44,7 +43,6 @@ function getGoodDiff(updated, current) {
   let message = `Изменения в товаре: ${updated.link}`;
   message += `\nЦена - ${current.price || '?'} -> ${updated.price}`;
   message += `\nДоступность - ${flagToMessage(current.isAvailable)} -> ${flagToMessage(updated.isAvailable)}`;
-  message += `\nБонусные рубли - ${current.bonus || '?'} -> ${updated.bonus}`;
   return message;
 }
 

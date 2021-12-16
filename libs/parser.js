@@ -17,19 +17,16 @@ async function getGoodDataInCity(goodUrl, cityCode) {
     const $ = cheerio.load(body);
 
     let price = 0;
-    let bonus = 0;
 
     const isSoldOut = $('.product-sold-out-text').get().length > 0;
     if (!isSoldOut) {
         price = getNumber($('.price__main-value').first().text());
-        bonus = getNumber($('.mbonus-block__value').first().text());
     }
 
     console.log(goodUrl, price);
     return {
         price,
         isAvailable: !isSoldOut,
-        bonus,
     };
 }
 
@@ -47,7 +44,6 @@ module.exports = {
             link: url,
             price: goodData.price,
             isAvailable: goodData.isAvailable,
-            bonus: goodData.bonus,
             isExisted: true,
         };
     },
