@@ -17,7 +17,7 @@ module.exports = {
     if (dataFromCache) return dataFromCache;
 
     const docData = await googleDocs.getDocData(doc.id, doc.range);
-    const data = docData.map(row => row[0]);
+    const data = docData.map(row => row[0]).filter(Boolean);
     cache.set(doc.id, data);
     return data;
   },
