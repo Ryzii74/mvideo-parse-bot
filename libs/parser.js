@@ -78,15 +78,24 @@ async function getPageBody(url, cityCode) {
     try {
         const browser = await puppeteer.launch(options);
         const page = await browser.newPage();
-        await page.setCookie({
-            name: 'MVID_CITY_ID',
-            value: `City${cityCode}`,
-            domain: '.www.mvideo.ru',
-        });
+
+        // загружаем страницу
         await page.goto(url, {
             waitUntil: 'networkidle2'
         });
-        await page.waitForTimeout(60000);
+        // ждем получения кук
+        await page.waitForTimeout(10000);
+        const cookies = await page.cookies();
+        // подменяем куку города
+        const cityCookie = cookies.find(cookie => cookie.name === 'MVID_CITY_ID');
+        cityCookie.value = `City${cityCode}`;
+        await page.setCookie(...cookies);
+        // обновляем страницу в нужном городе
+        await page.goto(url, {
+            waitUntil: 'networkidle2'
+        });
+        await page.waitForTimeout(50000);
+
         const body = await page.content();
         await browser.close();
         console.log(body);
