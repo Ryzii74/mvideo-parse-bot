@@ -32,10 +32,10 @@ async function checkCity(cityData) {
 
 module.exports = {
     init() {
-        cron.schedule('* 14 * * *', () => {
+        cron.schedule('0 14 * * *', () => {
             checkCity(CITY_CODES.VLDVSTK);
         });
-        cron.schedule('* 21 * * *', () => {
+        cron.schedule('0 21 * * *', () => {
             checkCity(CITY_CODES.MSK);
         });
     }
