@@ -88,6 +88,7 @@ async function getPageBody(url, cityCode) {
         });
         await page.waitForTimeout(60000);
         const body = await page.content();
+        await browser.close();
         console.log(body);
         return body;
     } catch (err) {
