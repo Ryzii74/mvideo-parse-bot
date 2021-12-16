@@ -9,8 +9,8 @@ module.exports = {
         return db;
     },
 
-    async init(config) {
-        const url = `mongodb://${config.host}:${config.port}/${config.database}`;
+    async init(connection) {
+        const url = `mongodb://${connection.host}:${connection.port}/${connection.database}`;
         db = await mongodb.connect(url);
     },
 };

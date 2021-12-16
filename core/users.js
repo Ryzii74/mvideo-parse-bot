@@ -4,7 +4,7 @@ const db = require('./db');
 const config = require('../config');
 
 function getCollection() {
-    return db.get().collection(config.collections.users);
+    return db.get().collection(config.db.collections.users);
 }
 
 module.exports = {
@@ -27,6 +27,6 @@ module.exports = {
 
     async getAllIdsToSend() {
         const ids = await this.getAllIds();
-        return ids.filter(id => config.allowedUsers.includes(id));
+        return ids.filter(id => config.bot.allowedUsers.includes(id));
     }
 };

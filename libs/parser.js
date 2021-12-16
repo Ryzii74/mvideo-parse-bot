@@ -1,8 +1,7 @@
 "use strict";
 
 const cheerio = require('cheerio');
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
+const puppeteer = require('puppeteer');
 
 function getNumber(text) {
     const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -13,74 +12,85 @@ function getNumber(text) {
       .join('');
 }
 
-async function getCity(url, cityCode) {
-    let body;
-    try {
-        const { stdout } = await exec(`curl -m 30 -A "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1" https://${url}?cityId=City${cityCode}`, {maxBuffer: 1024 * 5000});
-        body = stdout;
-    } catch (err) {
-        const errorMessage = `Ошибка загрузки товара ${url} в городе ${cityCode}`;
-        console.error(errorMessage, err);
-        throw new Error(errorMessage);
-    }
+async function getGoodDataInCity(goodUrl, cityCode) {
+    const body = await getPageBody(goodUrl, cityCode);
     const $ = cheerio.load(body);
 
-    const priceFieldText = $('.fl-pdp-price__current').first().text();
-    const price = getNumber(priceFieldText);
-    const isTradeIn = $('.o-pay__trade-toggle').get().length > 0;
-    const bonus = getNumber($('.u-color-red.wrapper-text__rouble').first().text());
+    let price = 0;
+    let bonus = 0;
 
-    const notification = $('.c-notifications__title').first().text() || "";
+    const isSoldOut = $('.product-sold-out-text').get().length > 0;
+    if (!isSoldOut) {
+        price = getNumber($('.price__main-value').first().text());
+        bonus = getNumber($('.mbonus-block__value').first().text());
+    }
 
-    console.log(url, price, bonus, notification.trim());
+    console.log(goodUrl, price);
     return {
-        price: price,
-        isAvailable: notification.trim() !== 'Товар временно отсутствует в продаже',
-        isTradeIn,
+        price,
+        isAvailable: !isSoldOut,
         bonus,
     };
 }
 
 module.exports = {
-    async get(url) {
-        const getCityWithRetry = retry(getCity, 3);
-        const chelData = await getCityWithRetry(url, 'CZ_1216');
-        if (!chelData.price) {
+    async get(url, cityCode) {
+        const goodData = await getGoodDataInCity(url, cityCode);
+        if (!goodData || !goodData.price) {
             return {
                 link: url,
-                chelPrice: chelData.price,
-                chelAvailable: false,
-                checlIsTradeIn: false,
-                chelBonus: 0,
-                existed: false,
+                isExisted: false,
             };
         }
 
         return {
             link: url,
-            chelPrice: chelData.price,
-            chelAvailable: chelData.isAvailable,
-            chelIsTradeIn: chelData.isTradeIn,
-            chelBonus: chelData.bonus,
-            existed: true,
+            price: goodData.price,
+            isAvailable: goodData.isAvailable,
+            bonus: goodData.bonus,
+            isExisted: true,
         };
     },
 };
 
-function retry(func, retryCount) {
-    return async function (...args) {
-        let triesCount = 0;
-        let error = null;
-        while (triesCount < retryCount) {
-            try {
-                return await func(...args);
-            } catch (err) {
-                console.error(err.message);
-                error = err;
-                triesCount++;
-            }
-        }
+async function getPageBody(url, cityCode) {
+    const args = [
+        '--no-sandbox',
+        '--disable-gpu',
 
-        throw error;
+        '--disable-dev-shm-usage',
+        '--disable-setuid-sandbox',
+        '--disable-infobars',
+        '--window-position=0,0',
+        '--ignore-certifcate-errors',
+        '--ignore-certifcate-errors-spki-list',
+        '--user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36"'
+    ];
+
+    const options = {
+        args,
+        headless: true,
+        ignoreHTTPSErrors: true,
+        acceptInsecureCerts: true,
+    };
+
+    try {
+        const browser = await puppeteer.launch(options);
+        const page = await browser.newPage();
+        await page.setCookie({
+            name: 'MVID_CITY_ID',
+            value: `City${cityCode}`,
+            domain: 'mvideo.ru',
+            expires: Math.floor((Date.now() + 86400000) / 1000),
+        });
+        await page.goto(url);
+        await page.waitForTimeout(10000);
+        const body = await page.content();
+        console.log(body);
+        return body;
+    } catch (err) {
+        const errorMessage = `Ошибка загрузки товара ${url}`;
+        console.error(errorMessage, err);
+        throw new Error(errorMessage);
     }
 }

@@ -4,6 +4,11 @@ const sender = require('./bot');
 const users = require('./users');
 
 module.exports = {
+  async sendAll(message) {
+    const userIds = await users.getAllIdsToSend();
+    return this.send(userIds, message);
+  },
+
   async send(userIds, message) {
     await this._sendToUsers(userIds, message);
   },
@@ -19,12 +24,6 @@ module.exports = {
       await sender.sendToUser(userId, message);
     } catch (err) {
       await errorHandler(userId, err);
-    }
-  },
-
-  async sendMany(userIds, messages) {
-    for (let message of messages) {
-      await this._sendToUsers(userIds, message);
     }
   },
 };

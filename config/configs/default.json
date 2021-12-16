@@ -5,39 +5,34 @@
       {
         "name": "start",
         "substr": "/start"
-      },
-      {
-        "name": "allGoodsCount",
-        "substr": "/count"
-      },
-      {
-        "name": "addGood",
-        "substr": "/add"
-      },
-      {
-        "name": "removeGood",
-        "substr": "/remove"
-      },
-      {
-        "name": "getAllGoodLinks",
-        "substr": "/get"
       }
+    ],
+    "allowedUsers": [
+      491345376,
+      59745477,
+      29222755
     ]
   },
-  "allowedUsers": [
-    491345376,
-    59745477,
-    29222755
-  ],
-  "db": {
-    "host": "mongodb",
-    "port": "27017",
-    "database": "mvideo"
+  "googleDocs": {
+    "connection": {
+      "key": "config/keys/pure-anthem-820-db2503f99f52.json"
+    },
+    "docs": {
+      "goodsList": {
+        "id": "1-65d37C2pLv1M1vDRaWfxyVJL3Mmd0L-_UFhP1jRlE0",
+        "range": "Лист1!A:A"
+      }
+    }
   },
-  "collections": {
-    "users": "users",
-    "goods": "goods",
-    "newOfferGoods": "newOfferGoods",
-    "offerGoods": "offerGoods"
+  "db": {
+    "connection": {
+      "host": "mongodb",
+      "port": "27017",
+      "database": "mvideo"
+    },
+    "collections": {
+      "users": "users",
+      "goods": "goods"
+    }
   }
 }
