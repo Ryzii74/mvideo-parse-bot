@@ -1,5 +1,6 @@
 config/configs/production.json
 config/configs/test.json
+config/keys
 npm-debug.log
 node_modules
 .idea
