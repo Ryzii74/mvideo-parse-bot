@@ -23,7 +23,6 @@ async function getGoodDataInCity(goodUrl, cityCode) {
         price = getNumber($('.price__main-value').first().text());
     }
 
-    console.log(goodUrl, price);
     return {
         price,
         isAvailable: !isSoldOut,
@@ -90,7 +89,7 @@ async function getPageBody(url, cityCode) {
         await page.goto(url, {
             waitUntil: 'networkidle2'
         });
-        await page.waitForTimeout(20000);
+        await page.waitForTimeout(15000);
 
         const body = await page.content();
         await browser.close();
