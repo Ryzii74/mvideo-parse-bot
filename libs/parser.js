@@ -80,7 +80,7 @@ async function getPageBody(url, cityCode) {
             waitUntil: 'networkidle2'
         });
         // ждем получения кук
-        await page.waitForTimeout(5000);
+        await page.waitForTimeout(4000);
         const cookies = await page.cookies();
         // подменяем куку города
         const cityCookie = cookies.find(cookie => cookie.name === 'MVID_CITY_ID');
@@ -90,7 +90,7 @@ async function getPageBody(url, cityCode) {
         await page.goto(url, {
             waitUntil: 'networkidle2'
         });
-        await page.waitForTimeout(25000);
+        await page.waitForTimeout(20000);
 
         const body = await page.content();
         await browser.close();
