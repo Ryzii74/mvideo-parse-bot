@@ -20,7 +20,7 @@
     "@googleapis/sheets": "^0.3.0",
     "cheerio": "^1.0.0-rc.2",
     "mongodb": "^2.2.33",
-    "nconf": "^0.9.1",
+    "nconf": "^0.11.4",
     "node-cron": "^3.0.0",
     "node-telegram-bot-api": "^0.29.0",
     "puppeteer": "^13.0.0"
